@@ -11,9 +11,12 @@ app.use('/public', express.static(process.cwd() + '/public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// set 'pug' as the 'view-engine'. 
+app.set('view engine', 'pug')
+
 app.route('/')
   .get((req, res) => {
-    res.sendFile(process.cwd() + '/views/index.html');
+    res.sendFile(process.cwd() + '/views/pug/index.pug');
   });
 
 app.listen(process.env.PORT || 3000, () => {
