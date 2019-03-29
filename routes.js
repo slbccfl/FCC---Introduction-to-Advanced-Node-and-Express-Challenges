@@ -18,6 +18,7 @@ module.exports = function (app, db) {
       res.render(process.cwd() + '/views/pug/index', {title: 'Home page', message: 'Please login', showLogin: true, showRegistration: true});
     });
 
+
   app.route('/login')
     .post(passport.authenticate('local', { failureRedirect: '/' }),(req,res) => {
          res.redirect('/profile');
@@ -60,7 +61,7 @@ module.exports = function (app, db) {
     .get((req, res) => {
         req.logout();
         res.redirect('/');
-    });
+    });  
   
   // app.use((req, res, next) => {
   //   res.status(404)

@@ -9,6 +9,9 @@ const session     = require('express-session');
 const mongodb     = require('mongodb');
 const mongo = require('mongodb').MongoClient;
 
+const passport    = require('passport');
+const bcrypt     = require('bcrypt');
+
 const app = express();
 
 const cors = require('cors');
@@ -22,16 +25,24 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // set 'pug' as the 'view-engine'. 
 app.set('view engine', 'pug')
 
-
-
 mongo.connect(process.env.DATABASE, (err, db) => {
     if(err) {
         console.log('Database error: ' + err);
     } else {
       console.log('Successful database connection');
+      
       auth(app, db)
       routes(app, db)
+  
+      app.route('/auth/github')
+        .get((req, res) => {
+          res.redirect(passport.authenticate('github'))
+        });
 
+      app.route('/auth/github/callback')
+        .get(passport.authenticate('github', { failureRedirect: '/' }),(req,res) => {
+             res.redirect('/profile');
+        });
       
       app.listen(process.env.PORT || 3000, () => {
           console.log("Listening on port " + process.env.PORT);
