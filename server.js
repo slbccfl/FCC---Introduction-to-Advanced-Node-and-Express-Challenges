@@ -14,6 +14,8 @@ const http        = require('http').Server(app);
 const sessionStore= new session.MemoryStore();
 const io = require('socket.io')(http);
 
+const cors = require('cors');
+app.use(cors());
 
 fccTesting(app); //For FCC testing purposes
 
@@ -31,6 +33,7 @@ app.use(session({
   store: sessionStore,
 }));
 
+var currentUsers = 0;
 
 mongo.connect(process.env.DATABASE, (err, db) => {
     if(err) console.log('Database error: ' + err);
@@ -44,9 +47,13 @@ mongo.connect(process.env.DATABASE, (err, db) => {
     //start socket.io code  
 
     io.on('connection', socket => {
+      ++currentUsers;
+      io.emit('user count', currentUsers); 
       console.log('A user has connected');
     });
   
+
+
 
     //end socket.io code
   
